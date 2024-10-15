@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_finished"
-        android:name="com.dicoding.event.ui.notifications.FinishedFragment"
+        android:name="com.dicoding.event.ui.Finished.FinishedFragment"
         android:label="@string/title_finished"
         tools:layout="@layout/fragment_finished" />
 </navigation>

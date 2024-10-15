@@ -1,12 +1,10 @@
-package com.dicoding.event.ui.upcoming
+package com.dicoding.event.ui.Finished
 
 import com.dicoding.event.data.response.DetailResponse
 import com.dicoding.event.data.response.Event
 import com.dicoding.event.data.response.EventResponse
 import com.dicoding.event.data.response.ListEventsItem
 import com.dicoding.event.data.retrofit.ApiConfig
-import com.dicoding.event.ui.Finished.FinishedViewModel
-import com.dicoding.event.ui.Finished.FinishedViewModel.Companion
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,13 +13,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class UpcomingViewModel : ViewModel() {
+class FinishedViewModel : ViewModel() {
+    private val _finished = MutableLiveData<List<ListEventsItem>?>()
+    val finished: LiveData<List<ListEventsItem>?> = _finished
 
-    private val _upcoming = MutableLiveData<List<ListEventsItem>?>()
-    val upcoming: LiveData<List<ListEventsItem>?> = _upcoming
-
-    private val _detailUpcoming = MutableLiveData<Event?>()
-    val detailUpcoming: LiveData<Event?> = _detailUpcoming
+    private val _detailFinished = MutableLiveData<Event?>()
+    val detailFinished: LiveData<Event?> = _detailFinished
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -33,15 +30,15 @@ class UpcomingViewModel : ViewModel() {
     val message: LiveData<String> = _message
 
     companion object {
-        private const val TAG = "UpcomingViewModel"
-        private const val EVENT_ID = 1
+        private const val TAG = "FinishedViewModel"
+        private const val EVENT_ID = 0
     }
 
     init {
-        listUpcomingEvents()
+        listFinishedEvents()
     }
 
-    private fun listUpcomingEvents() {
+    private fun listFinishedEvents() {
         _isLoading.value = true
         val client = ApiConfig.getApiService().getListEvents(EVENT_ID)
         client.enqueue(object : Callback<EventResponse> {
@@ -49,7 +46,7 @@ class UpcomingViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     response.body()?.let {
                         _isLoading.value = false
-                        _upcoming.value = it.listEvents as List<ListEventsItem>?
+                        _finished.value = it.listEvents as List<ListEventsItem>?
                     }
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
@@ -58,7 +55,7 @@ class UpcomingViewModel : ViewModel() {
                 }
             }
 
-            override fun onFailure(p0: Call<EventResponse>, t: Throwable) {
+            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                 Log.e(TAG, "onFailure: ${t.message}")
                 _isLoading.value = false
                 _error.value = true
@@ -71,25 +68,19 @@ class UpcomingViewModel : ViewModel() {
         })
     }
 
-    fun detailUpcomingEvent(id: Int) {
+    fun detailFinishedEvents(id: Int) {
         _isLoading.value = true
         val client = ApiConfig.getApiService().getDetailEvent(id)
         client.enqueue(object : Callback<DetailResponse<Event>> {
-            override fun onResponse(
-                call: Call<DetailResponse<Event>>,
-                response: Response<DetailResponse<Event>>
-            ) {
+            override fun onResponse(call: Call<DetailResponse<Event>>, response: Response<DetailResponse<Event>>) {
                 if (response.isSuccessful) {
                     _isLoading.value = false
-                    _detailUpcoming.value = response.body()?.event
+                    _detailFinished.value = response.body()?.event
                 } else {
                     _isLoading.value = false
                     _error.value = true
                     _message.value = "Error: ${response.message()}"
-                    Log.e(
-                        TAG,
-                        "onFailure: ${response.message()}"
-                    )
+                    Log.e(TAG, "onFailure: ${response.message()}")
                 }
             }
 
@@ -97,11 +88,7 @@ class UpcomingViewModel : ViewModel() {
                 _isLoading.value = false
                 _error.value = true
                 _message.value = "Error: ${t.message}"
-                Log.e(
-                    TAG,
-                    "onFailure: ${t.message}"
-                )
+                Log.e(TAG, "onFailure: ${t.message}")
             }
         })
-    }
-}
+    }}

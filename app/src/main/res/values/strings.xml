@@ -3,4 +3,9 @@
     <string name="title_home">Home</string>
     <string name="title_upcoming">Upcoming</string>
     <string name="title_finished">Finished</string>
+    <string name="quota">Sisa kuota :</string>
+    <string name="beginTime">Dimulai :</string>
+    <string name="owner">Penyelenggara :</string>
+    <string name="category">Kategori :</string>
+    <string name="location">Lokasi :</string>
 </resources>

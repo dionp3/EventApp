@@ -51,8 +51,13 @@ class HomeFragment : Fragment() {
         binding.rvFinished.adapter = finishedAdapter
 
         upcomingViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            showLoading(isLoading)
+            showUpcomingLoading(isLoading)
         }
+
+        finishedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            showFinishedLoading(isLoading)
+        }
+
 
         upcomingViewModel.upcoming.observe(viewLifecycleOwner) { listEvents ->
             listEvents?.let {
@@ -86,23 +91,39 @@ class HomeFragment : Fragment() {
     private fun setUpcomingList(listEvents: List<ListEventsItem>) {
         upcomingAdapter.submitList(listEvents)
 
+        // On item click for upcoming events
         upcomingAdapter.onItemClickListener = { event ->
-            event.id?.let { upcomingViewModel.detailUpcomingEvent(it) }
+            event.id?.let {
+                // Log to ensure it's for upcoming events
+                upcomingViewModel.detailUpcomingEvent(it)
+                println("Upcoming event clicked: $it")
+            }
         }
     }
 
     private fun setFinishedList(listEvents: List<ListEventsItem>) {
         finishedAdapter.submitList(listEvents)
 
+        // On item click for finished events
         finishedAdapter.onItemClickListener = { event ->
-            event.id?.let { finishedViewModel.detailFinishedEvents(it) }
+            event.id?.let {
+                // Log to ensure it's for finished events
+                finishedViewModel.detailFinishedEvents(it)
+                println("Finished event clicked: $it")
+            }
         }
     }
 
 
-    private fun showLoading(isLoading: Boolean) {
-        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+
+    private fun showUpcomingLoading(isLoading: Boolean) {
+        binding.progressBarUpcoming.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
+
+    private fun showFinishedLoading(isLoading: Boolean) {
+        binding.progressBarFinished.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
